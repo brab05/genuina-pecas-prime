@@ -1,0 +1,17 @@
+{
+  "title": "Genuína Peças Prime",
+  "description": "Distribuidora especializada em peças hidráulicas e mecânicas automotivas, com sede em Campinas/SP. Rigor técnico, seleção criteriosa e atendimento consultivo.",
+  "robots": {
+    "index": false
+  },
+  "icons": {
+    "icon": "/favicon.png"
+  },
+  "openGraph": {
+    "image": "/og-image.png"
+  },
+  "accessibility": {
+    "addBypassLinks": false,
+    "ignoreReducedMotion": false
+  }
+}
