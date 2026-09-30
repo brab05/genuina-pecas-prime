@@ -10,6 +10,41 @@
   --font-display: 'Space Grotesk', sans-serif;
   --font-body: 'Inter', sans-serif;
   --font-mono: 'JetBrains Mono', monospace;
+
+  /* ── Design system (Etapa 2) ──────────────────────────────────────────
+     Mistura ~65% Direção A (precisão de engenharia: grid fino, motion
+     seco, hairlines) / ~35% Direção B (força industrial: escala grande,
+     blocos cheios), reservada a "momentos de impacto" pontuais. */
+
+  /* Escala tipográfica de display — mesma família (Space Grotesk), só
+     formaliza os tamanhos que já existiam soltos em clamp() ad hoc. */
+  --text-display-hero: clamp(2.75rem, 6vw, 5.5rem);   /* momento de impacto B */
+  --text-display-xl: clamp(2.25rem, 4.5vw, 3.5rem);   /* h2 de seção */
+  --text-display-lg: clamp(1.75rem, 3vw, 2.25rem);
+  --text-display-md: 1.35rem;
+
+  /* Espaçamento — módulo de 8px, nomeado pelo papel que cumpre, não pelo valor */
+  --space-section-y: clamp(4rem, 8vw, 6rem);   /* padding vertical de seção */
+  --space-block: 2.5rem;                        /* entre blocos dentro de uma seção */
+  --space-grid: 104px;                          /* módulo do grid técnico de fundo */
+
+  /* Raios — trava de consistência: 0 em blocos/cards, 6px só em controles */
+  --radius-block: 0px;
+  --radius-control: 6px;
+
+  /* Sombras tingidas de tinta (nunca preto puro) */
+  --shadow-card-hover: 0 16px 32px rgba(11,14,26,0.10);
+  --shadow-block: 0 24px 60px rgba(11,14,26,0.18);   /* peso físico — Direção B */
+
+  /* Easings — "preciso" (A, seco, sem overshoot) e "engate" (B, leve chegada) */
+  --ease-precise: cubic-bezier(0.4, 0, 0.2, 1);
+  --ease-engage: cubic-bezier(0.16, 1, 0.3, 1);
+
+  /* Durações */
+  --dur-fast: 150ms;
+  --dur-base: 350ms;
+  --dur-slow: 700ms;
+  --dur-hero: 900ms;
 }
 
 *,
@@ -20,6 +55,10 @@
 
 html {
   scroll-behavior: smooth;
+}
+
+a, button {
+  touch-action: manipulation;
 }
 
 body {
@@ -36,12 +75,19 @@ body {
 ::-webkit-scrollbar-track { background: #F5F6FA; }
 ::-webkit-scrollbar-thumb { background: #004BBE; border-radius: 0; }
 
+/* Foco visível e consistente pra teclado — nunca remove o outline sem repor */
+:focus-visible {
+  outline: 2px solid #004BBE;
+  outline-offset: 2px;
+}
+
 /* Type */
 h1, h2, h3, h4 {
   font-family: 'Space Grotesk', sans-serif;
   font-weight: 700;
   line-height: 0.95;
   letter-spacing: -0.065em;
+  text-wrap: balance;
 }
 
 .font-display { font-family: 'Space Grotesk', sans-serif; letter-spacing: -0.065em; }
@@ -56,12 +102,75 @@ h1, h2, h3, h4 {
   color: transparent;
 }
 
+/* ── Componentes base (Etapa 2) ──────────────────────────────────────── */
+
+.container-gpp {
+  max-width: 80rem; /* screen-xl */
+  margin-inline: auto;
+  padding-inline: 2rem;
+}
+@media (min-width: 1024px) { .container-gpp { padding-inline: 2.5rem; } }
+
+.section-gpp {
+  padding-block: var(--space-section-y);
+}
+
+/* Cartão — Direção A: sem sombra em repouso, hairline só. A elevação é
+   reservada pra hover (feedback), nunca decoração parada. */
+.card-gpp {
+  background: #fff;
+  border: 1px solid var(--color-rule);
+  border-radius: var(--radius-block);
+  transition: transform var(--dur-base) var(--ease-precise), box-shadow var(--dur-base) var(--ease-precise);
+}
+.card-gpp:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-card-hover);
+}
+
+/* Botão primário — controle único com raio, o resto do sistema fica reto */
+.btn-primary-gpp {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: var(--color-prime);
+  color: #fff;
+  border-radius: var(--radius-control);
+  transition: transform var(--dur-fast) var(--ease-engage), opacity var(--dur-fast) var(--ease-precise);
+}
+.btn-primary-gpp:hover { opacity: 0.92; transform: scale(1.03); }
+.btn-primary-gpp:active { transform: scale(1); }
+
+/* Link inline — sublinhado técnico (régua), não o botão fantasma genérico */
+.link-gpp {
+  position: relative;
+  transition: color var(--dur-base) var(--ease-precise), opacity var(--dur-fast) var(--ease-precise);
+}
+.link-gpp::after {
+  content: "";
+  position: absolute;
+  left: 0; right: 100%; bottom: -2px;
+  height: 1px;
+  background: currentColor;
+  transition: right var(--dur-base) var(--ease-precise);
+}
+.link-gpp:hover::after { right: 0; }
+
+/* Bloco de impacto — Direção B: cheio, sem hairline, sombra com peso físico.
+   Uso restrito: Hero e o recall de marca perto do Contato. */
+.block-impact-gpp {
+  background: var(--color-ink);
+  border-radius: var(--radius-block);
+  box-shadow: var(--shadow-block);
+}
+
 /* Label style */
 .label {
   font-family: 'JetBrains Mono', monospace;
   font-size: 0.65rem;
   letter-spacing: 0.14em;
   text-transform: uppercase;
+  font-variant-numeric: tabular-nums;
 }
 
 /* Marquee */
@@ -72,6 +181,10 @@ h1, h2, h3, h4 {
 .animate-marquee {
   animation: marquee 28s linear infinite;
   will-change: transform;
+}
+.marquee-fade {
+  -webkit-mask-image: linear-gradient(90deg, transparent 0, #000 64px, #000 calc(100% - 64px), transparent 100%);
+  mask-image: linear-gradient(90deg, transparent 0, #000 64px, #000 calc(100% - 64px), transparent 100%);
 }
 
 /* Fade up */
@@ -100,4 +213,80 @@ h1, h2, h3, h4 {
 @keyframes orbit {
   from { transform: rotate(0deg); }
   to   { transform: rotate(360deg); }
+}
+.orbit-marker {
+  animation: orbit var(--orbit-duration, 26s) linear infinite;
+}
+.orbit-ring {
+  animation: orbit var(--ring-duration, 90s) linear infinite;
+}
+
+/* Borda com brilho seguindo o cursor — usada nos cards interativos */
+.spotlight-card {
+  position: relative;
+  --spot-x: 50%;
+  --spot-y: 50%;
+}
+.spotlight-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 1px;
+  background: radial-gradient(280px circle at var(--spot-x) var(--spot-y), rgba(0,75,190,0.65), transparent 72%);
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  opacity: 0;
+  transition: opacity 0.35s ease;
+  pointer-events: none;
+}
+.spotlight-card:hover::before { opacity: 1; }
+@media (prefers-reduced-motion: reduce) {
+  .spotlight-card::before { transition: none; }
+}
+
+/* Brilho diagonal que varre o botão no hover — feedback tátil nos CTAs */
+.btn-shine {
+  position: relative;
+  overflow: hidden;
+}
+.btn-shine::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -60%;
+  width: 40%;
+  height: 100%;
+  background: linear-gradient(115deg, transparent, rgba(255,255,255,0.45), transparent);
+  transform: skewX(-20deg);
+  transition: left 0.6s ease;
+  pointer-events: none;
+}
+.btn-shine:hover::after { left: 130%; }
+@media (prefers-reduced-motion: reduce) {
+  .btn-shine::after { transition: none; display: none; }
+}
+
+/* Textura sutil — quebra a chapa lisa de qualquer bloco de fundo */
+.bg-grain {
+  position: relative;
+}
+.bg-grain::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.05;
+  mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/* Loops decorativos contínuos param pra quem pede menos movimento */
+@media (prefers-reduced-motion: reduce) {
+  .animate-marquee,
+  .orbit-marker,
+  .orbit-ring {
+    animation: none !important;
+  }
 }

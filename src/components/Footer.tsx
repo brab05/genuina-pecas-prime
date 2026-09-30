@@ -13,7 +13,7 @@ export default function Footer() {
         </p>
         <a
           href="#top"
-          className="label inline-flex items-center gap-2 transition-opacity duration-200 hover:opacity-70"
+          className="label link-gpp inline-flex items-center gap-2"
           style={{ color: "rgba(255,255,255,0.5)" }}
         >
           VOLTAR AO TOPO <span aria-hidden>↑</span>

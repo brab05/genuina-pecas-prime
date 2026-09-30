@@ -18,3 +18,13 @@ logs/
 # beside it.
 /.plugins/
 /.opencode-skills/
+
+# Skills/agent tooling installed locally (npx skills add / npx plugins add) —
+# editor config, not site source.
+/.agents/
+/.claude/
+skills-lock.json
+
+# Scratch artifacts from the redesign audit (screenshots, content diffs) —
+# process output, not part of the deployed site.
+/_redesign/

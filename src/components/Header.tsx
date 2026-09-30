@@ -23,11 +23,12 @@ export default function Header() {
 
   return (
     <header
-      className="fixed inset-x-0 top-0 z-50 transition-all duration-400"
+      className="fixed inset-x-0 top-0 z-50"
       style={{
         background: scrolled ? "rgba(255,255,255,0.97)" : "rgba(255,255,255,0.7)",
         backdropFilter: "blur(16px)",
         borderBottom: scrolled ? "1px solid #E2E4EE" : "1px solid transparent",
+        transition: "background var(--dur-base) var(--ease-precise), border-color var(--dur-base) var(--ease-precise)",
       }}
     >
       <div className="max-w-screen-xl mx-auto px-6 lg:px-10 h-16 grid grid-cols-[1fr_auto_1fr] items-center">
@@ -51,8 +52,7 @@ export default function Header() {
             <Link
               key={to}
               to={to}
-              className="label transition-colors duration-200 hover:text-[#004BBE]"
-              style={{ color: "#5C6070" }}
+              className="label link-gpp text-[#5C6070] hover:text-[#004BBE]"
             >
               {label}
             </Link>
@@ -63,7 +63,7 @@ export default function Header() {
         <div className="hidden md:flex justify-self-end">
           <Link
             to="/#contato"
-            className="label inline-flex items-center gap-2 px-5 py-2.5 transition-all duration-200 hover:opacity-90 hover:scale-105"
+            className="btn-shine label inline-flex items-center gap-2 px-5 py-2.5 transition-all duration-200 hover:opacity-90 hover:scale-105 active:scale-100"
             style={{ background: "#004BBE", color: "white", borderRadius: "6px" }}
           >
             Fale com a equipe
@@ -76,6 +76,7 @@ export default function Header() {
           className="md:hidden w-8 h-8 flex flex-col items-center justify-center gap-1.5 justify-self-end col-start-3"
           onClick={() => setOpen(!open)}
           aria-label="Menu"
+          aria-expanded={open}
         >
           {[0, 1, 2].map((i) => (
             <span
