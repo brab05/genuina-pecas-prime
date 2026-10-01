@@ -50,62 +50,6 @@ function useTilt<T extends HTMLElement>(max = 9) {
   return { ref, onMouseMove, onMouseLeave };
 }
 
-// Corte técnico genérico (sem marca de montadora) — linha fina no mesmo
-// estilo dos ícones do site, com o losango da marca marcando a linha
-// hidráulica. Camada decorativa revelada pelo mouse no Hero.
-function CarCutaway({ style }: { style?: React.CSSProperties }) {
-  return (
-    <svg viewBox="0 0 900 300" style={style} fill="none" stroke="currentColor" aria-hidden="true">
-      <path strokeWidth="2.5" d="M50,210 L50,190 C50,175 60,165 75,162 L170,150 C200,105 250,80 320,78 L470,78 C520,55 590,52 640,72 L700,90 C740,100 770,120 790,150 L830,162 C845,165 855,175 855,190 L855,210" />
-      <line strokeWidth="2.5" x1="50" y1="210" x2="855" y2="210" />
-      <circle strokeWidth="2.5" cx="190" cy="212" r="46" />
-      <circle strokeWidth="1.5" cx="190" cy="212" r="18" />
-      <circle strokeWidth="2.5" cx="700" cy="212" r="46" />
-      <circle strokeWidth="1.5" cx="700" cy="212" r="18" />
-      <path strokeWidth="1.5" strokeDasharray="4 4" opacity="0.6" d="M175,150 C210,115 250,95 320,92 L465,92 C505,80 555,80 595,95" />
-      <path strokeWidth="1.5" strokeDasharray="2 6" d="M190,166 C300,140 400,185 450,150 C500,115 600,150 700,166" />
-      <circle strokeWidth="1.5" cx="450" cy="150" r="10" />
-      <rect width="8" height="8" fill="currentColor" stroke="none" x="446" y="146" transform="rotate(45 450 150)" />
-      <line strokeWidth="1" x1="190" y1="270" x2="190" y2="280" />
-      <line strokeWidth="1" x1="700" y1="270" x2="700" y2="280" />
-      <line strokeWidth="1" strokeDasharray="3 3" x1="190" y1="275" x2="700" y2="275" />
-    </svg>
-  );
-}
-
-// Máscara circular com leve inércia (lerp por frame) que revela a camada
-// de contraste total do corte técnico só ao redor do cursor.
-function useCursorReveal() {
-  const containerRef = useRef<HTMLDivElement>(null);
-  const maskRef = useRef<HTMLDivElement>(null);
-  const target = useRef({ x: -9999, y: -9999 });
-  const current = useRef({ x: -9999, y: -9999 });
-
-  useEffect(() => {
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-    let raf: number;
-    const tick = () => {
-      current.current.x += (target.current.x - current.current.x) * 0.1;
-      current.current.y += (target.current.y - current.current.y) * 0.1;
-      if (maskRef.current) {
-        maskRef.current.style.clipPath = `circle(170px at ${current.current.x}px ${current.current.y}px)`;
-      }
-      raf = requestAnimationFrame(tick);
-    };
-    raf = requestAnimationFrame(tick);
-    return () => cancelAnimationFrame(raf);
-  }, []);
-
-  const onMouseMove = (e: React.MouseEvent) => {
-    const el = containerRef.current;
-    if (!el) return;
-    const rect = el.getBoundingClientRect();
-    target.current = { x: e.clientX - rect.left, y: e.clientY - rect.top };
-  };
-
-  return { containerRef, maskRef, onMouseMove };
-}
-
 // Bloco de título de seção (Eyebrow + heading + parágrafo) que entra com
 // fade + leve translação ao rolar até ele — dá movimento à página sem
 // depender de scroll-jacking. Só anima transform/opacity (Motion já cuida
@@ -369,27 +313,11 @@ function OrbitalDiagram() {
 
 // ─── Hero ─────────────────────────────────────────────────────────────────────
 function Hero() {
-  const { containerRef, maskRef, onMouseMove } = useCursorReveal();
   return (
     <section className="relative flex flex-col bg-grain" style={{ background: "#F5F6FA" }}>
       <div
-        ref={containerRef}
-        onMouseMove={onMouseMove}
         className="relative grid grid-cols-1 lg:grid-cols-[55%_45%] items-center max-w-screen-xl mx-auto px-8 lg:px-16 w-full pt-40 pb-24 gap-16"
       >
-        {/* corte técnico revelado pelo cursor — camada base quase invisível
-            + camada de contraste total recortada por um círculo que segue
-            o mouse com leve inércia */}
-        <div className="hidden lg:block absolute inset-0 pointer-events-none" style={{ color: "#004BBE", opacity: 0.05, zIndex: 0 }}>
-          <CarCutaway style={{ position: "absolute", width: "760px", top: "40%", left: "50%", transform: "translate(-50%, -50%)" }} />
-        </div>
-        <div
-          ref={maskRef}
-          className="hidden lg:block absolute inset-0 pointer-events-none"
-          style={{ color: "#004BBE", opacity: 0.6, zIndex: 0, clipPath: "circle(0px at -999px -999px)" }}
-        >
-          <CarCutaway style={{ position: "absolute", width: "760px", top: "40%", left: "50%", transform: "translate(-50%, -50%)" }} />
-        </div>
         <img
           src={geralProImg}
           alt="Linha completa de produtos Genuína Peças Prime"
