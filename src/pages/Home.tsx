@@ -8,8 +8,9 @@ import geralProImg from "@/assets/products/geralpro.png";
 import reparoProImg from "@/assets/products/reparopro.png";
 import caixaProImg from "@/assets/products/caixapro2.png";
 import cremaProImg from "@/assets/products/cremapro.png";
-import mecaProImg from "@/assets/products/mecapro.png";
+import mecaProImg from "@/assets/products/mecapro3.png";
 import reservaProImg from "@/assets/products/reservapro.png";
+import oleoProImg from "@/assets/products/oleopro.png";
 
 // ─── tiny helpers ─────────────────────────────────────────────────────────────
 // Atualiza a posição do brilho (--spot-x/--spot-y) direto no DOM via ref,
@@ -540,6 +541,11 @@ const PRODUCTS = [
     tag: "MEC", title: "Caixa de Direção Mecânica",
     description: "Caixa de direção mecânica completa, para sistemas elétricos, pronta para instalação com precisão.",
     image: mecaProImg,
+  },
+  {
+    tag: "MEC", title: "Bomba de Óleo",
+    description: "Lubrificação constante e pressão de óleo confiável para o motor.",
+    image: oleoProImg,
   },
 ];
 
