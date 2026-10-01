@@ -207,13 +207,6 @@ function IconBriefcase() {
     </svg>
   );
 }
-function IconPhone() {
-  return (
-    <svg {...iconProps} className="w-full h-full">
-      <path strokeLinecap="round" strokeLinejoin="round" d="M3.5 5a1.5 1.5 0 011.5-1.5h2.1a1 1 0 01.97.76l.8 3.2a1 1 0 01-.27.96L7.3 9.7a12.5 12.5 0 006.9 6.9l1.28-1.3a1 1 0 01.96-.27l3.2.8a1 1 0 01.76.97V19a1.5 1.5 0 01-1.5 1.5h-1C9.7 20.5 3.5 14.3 3.5 6.5v-1.5z" />
-    </svg>
-  );
-}
 function IconChat() {
   return (
     <svg {...iconProps} className="w-full h-full">
@@ -229,15 +222,6 @@ function IconMail() {
     </svg>
   );
 }
-function IconPin() {
-  return (
-    <svg {...iconProps} className="w-full h-full">
-      <path strokeLinecap="round" strokeLinejoin="round" d="M12 21.5s7-6.3 7-11.7a7 7 0 10-14 0c0 5.4 7 11.7 7 11.7z" />
-      <circle cx="12" cy="9.8" r="2.3" />
-    </svg>
-  );
-}
-
 // ─── Marquee strip ────────────────────────────────────────────────────────────
 const ITEMS = ["CONTROLE EM CADA ETAPA", "SUPRIMENTO PARA SUA OPERAÇÃO", "GENUÍNA PEÇAS PRIME", "PRECISÃO NA SELEÇÃO"];
 
@@ -554,7 +538,7 @@ const PRODUCTS = [
   },
   {
     tag: "MEC", title: "Caixa de Direção Mecânica",
-    description: "Caixa de direção mecânica completa, pronta para instalação com precisão.",
+    description: "Caixa de direção mecânica completa, para sistemas elétricos, pronta para instalação com precisão.",
     image: mecaProImg,
   },
 ];
@@ -605,7 +589,9 @@ function ProductSlide({ product, number }: { product: (typeof PRODUCTS)[number];
 function ProductCarousel() {
   const [index, setIndex] = useState(0);
   const [visibleCount, setVisibleCount] = useState(1);
+  const [paused, setPaused] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
+  const reduceMotion = useReducedMotion();
   const total = PRODUCTS.length;
   // último índice que ainda mostra a faixa completa até a borda, sem sobrar
   // espaço vazio depois do último card
@@ -633,8 +619,16 @@ function ProductCarousel() {
     });
   };
 
+  // auto-rolagem a cada 2s — pausa no hover e desliga com prefers-reduced-motion
+  useEffect(() => {
+    if (reduceMotion || paused) return;
+    const id = setInterval(() => go(1), 2000);
+    return () => clearInterval(id);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [paused, reduceMotion, maxIndex]);
+
   return (
-    <div>
+    <div onMouseEnter={() => setPaused(true)} onMouseLeave={() => setPaused(false)}>
       <div ref={containerRef} className="overflow-hidden">
         <div
           className="flex"
@@ -797,34 +791,41 @@ export default function Home() {
           style={{ left: "64px", bottom: "0", width: "220px" }}
         />
         <div className="relative container-gpp section-gpp">
-          <Reveal className="grid grid-cols-1 lg:grid-cols-[1fr_320px] gap-8 items-start">
-            <div>
+          <Reveal className="text-center mb-14" style={{ maxWidth: "720px", marginInline: "auto" }}>
+            <div className="flex justify-center">
               <Eyebrow>01 / QUEM SOMOS</Eyebrow>
-              <h2
-                className="font-display font-bold leading-tight"
-                style={{ fontSize: "clamp(2.25rem, 4vw, 3.25rem)", color: "#0B0E1A" }}
-              >
-                <BlurIn>Toda peça carrega<br /><span className="text-shine">nosso compromisso.</span></BlurIn>
-              </h2>
-              <p className="font-medium leading-snug mt-8 pt-6" style={{ color: "#0B0E1A", fontSize: "1.35rem", borderTop: "1px solid #E2E4EE" }}>
-                Não vendemos apenas peças. Entregamos <span className="text-shine">segurança</span> e{" "}
-                <span className="text-shine">qualidade</span> em cada escolha.
-              </p>
             </div>
-            <div className="flex flex-col gap-4">
-              <p className="text-sm leading-snug lg:pt-3" style={{ color: "#9AA0B4", maxWidth: "26ch", textAlign: "justify" }}>
+            <h2
+              className="font-display font-bold leading-tight"
+              style={{ fontSize: "clamp(2.25rem, 4vw, 3.25rem)", color: "#0B0E1A" }}
+            >
+              <BlurIn>Toda peça carrega<br /><span className="text-shine">nosso compromisso.</span></BlurIn>
+            </h2>
+            <p className="font-medium leading-snug mt-6" style={{ color: "#0B0E1A", fontSize: "1.35rem" }}>
+              Não vendemos apenas peças. Entregamos <span className="text-shine">segurança</span> e{" "}
+              <span className="text-shine">qualidade</span> em cada escolha.
+            </p>
+          </Reveal>
+
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
+            <div className="card-gpp p-8">
+              <p className="text-sm leading-snug" style={{ color: "#5C6070" }}>
                 Uma nova marca independente, criada para tornar a rotina de oficinas, distribuidores e profissionais mais previsível.
               </p>
-              <p className="text-sm leading-snug" style={{ color: "#5C6070", maxWidth: "26ch", textAlign: "justify" }}>
+            </div>
+            <div className="card-gpp p-8">
+              <p className="text-sm leading-snug" style={{ color: "#5C6070" }}>
                 A Genuína Peças Prime nasce em Campinas para atender o mercado automotivo com um olhar direto sobre o que realmente importa: aplicação correta, informação clara e produto em que se pode confiar.
               </p>
-              <p className="text-sm leading-snug" style={{ color: "#5C6070", maxWidth: "26ch", textAlign: "justify" }}>
+            </div>
+            <div className="card-gpp p-8">
+              <p className="text-sm leading-snug" style={{ color: "#5C6070" }}>
                 Nosso trabalho começa antes do pedido e continua depois da entrega. Ouvimos a necessidade, entendemos o cenário e orientamos cada decisão com linguagem técnica, sem atalhos.
               </p>
             </div>
-          </Reveal>
+          </div>
 
-          <div className="flex flex-wrap items-center gap-4 mt-14 pt-6" style={{ borderTop: "1px solid #E2E4EE" }}>
+          <div className="flex flex-wrap items-center justify-center gap-4 mt-14 pt-6" style={{ borderTop: "1px solid #E2E4EE" }}>
             <span className="label" style={{ color: "#004BBE" }}>GPP / OPERAÇÃO</span>
             <Diamond size={5} />
             <span className="label" style={{ color: "#9AA0B4" }}>HIDRÁULICA E MECÂNICA</span>
@@ -966,10 +967,8 @@ export default function Home() {
 
             <div className="space-y-5 pt-6" style={{ borderTop: "1px solid #E2E4EE" }}>
               {[
-                { icon: <IconPhone />, label: "Telefone", value: "(19) 3515-2040" },
                 { icon: <IconChat />, label: "WhatsApp", value: "Falar pelo WhatsApp", href: "https://wa.me/5519999999999" },
                 { icon: <IconMail />, label: "E-mail", value: "contato@genuinapecasprime.com.br" },
-                { icon: <IconPin />, label: "Localização", value: "Campinas — São Paulo" },
               ].map((item) => {
                 const Tag = item.href ? "a" : "div";
                 return (
