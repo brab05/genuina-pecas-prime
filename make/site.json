@@ -6,7 +6,7 @@
     "index": true
   },
   "icons": {
-    "icon": "/favicon.png"
+    "icon": "/favicon.png?v=2"
   },
   "openGraph": {
     "image": "/og-image.png"
