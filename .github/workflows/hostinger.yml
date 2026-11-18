@@ -1,0 +1,50 @@
+name: Build para Hostinger
+
+# A cada push na main, gera o build de produção e publica só o conteúdo
+# de dist/ na branch "hostinger". A Hostinger (hPanel → Git) puxa essa branch
+# direto para o public_html.
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: hostinger
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          lfs: true
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10.34.3
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - run: pnpm install --no-frozen-lockfile
+
+      # Sem FIGMA_PUBLIC_URL: o site fica na raiz do domínio ("/").
+      - name: Build
+        run: pnpm run build
+
+      - name: Publicar dist/ na branch hostinger
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./dist
+          publish_branch: hostinger
+          force_orphan: true
+          enable_jekyll: true
+          commit_message: "Build para Hostinger"

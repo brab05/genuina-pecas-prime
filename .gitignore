@@ -28,3 +28,6 @@ skills-lock.json
 # Scratch artifacts from the redesign audit (screenshots, content diffs) —
 # process output, not part of the deployed site.
 /_redesign/
+
+# Pacote de upload para a Hostinger (gerado a partir do dist/)
+hostinger-upload.zip
