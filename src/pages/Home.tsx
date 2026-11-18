@@ -901,7 +901,7 @@ export default function Home() {
 
             <div className="space-y-5 pt-6" style={{ borderTop: "1px solid #E2E4EE" }}>
               {[
-                { icon: <IconChat />, label: "WhatsApp", value: "Falar pelo WhatsApp", href: "https://wa.me/5519999999999" },
+                { icon: <IconChat />, label: "WhatsApp", value: "Falar pelo WhatsApp", href: "https://wa.me/5519991519271" },
                 { icon: <IconMail />, label: "E-mail", value: "contato@genuinapecasprime.com.br" },
               ].map((item) => {
                 const Tag = item.href ? "a" : "div";
